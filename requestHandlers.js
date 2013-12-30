@@ -1,27 +1,20 @@
-var exec = require("child_process").exec;
+var querystring = require('querystring'),
+    template    = require('./templates');
 
-function start(response) {
+function start(response, postData) {
   console.log("Request handler 'start' was called.");
 
-  function sleep(milliseconds) {
-    var now = new Date().getTime();
-    while (new Date().getTime() < now + milliseconds);
-  }
+  response.writeHead(200, {"Content-Type": "text/html"});
+  response.write(template.startBody);
+  response.end();
 
-  exec("ls -lah",
-    { timeout: 100000, maxBuffer: 2000*1024 },
-    function(error, stdout, srderr) {
-      //sleep(10000);
-      response.writeHead(200, {"Content-Type": "text/plain"});
-      response.write(stdout);
-      response.end();
-  });
 }
 
-function upload(response) {
+function upload(response, postData) {
   console.log("Request handler 'upload' was called.");
   response.writeHead(200, {"Content-Type": "text/plain"});
-  response.write("Hello UPLOAD");
+  response.write("You've sent: " + 
+  querystring.parse(postData).text);
   response.end();
 }
 
